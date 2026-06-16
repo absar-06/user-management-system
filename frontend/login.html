@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<title>Login</title>
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Login</h1>
+
+<input
+type="email"
+id="email"
+placeholder="Enter Email">
+
+<br><br>
+
+<input
+type="password"
+id="password"
+placeholder="Enter Password">
+
+<br><br>
+
+<button onclick="login()">
+
+Login
+
+</button>
+
+</div>
+
+<script>
+
+async function login(){
+
+const email =
+document.getElementById(
+"email"
+).value;
+
+const password =
+document.getElementById(
+"password"
+).value;
+
+const response =
+await fetch(
+
+"http://localhost:5000/api/users/login",
+
+{
+
+method:"POST",
+
+headers:{
+"Content-Type":
+"application/json"
+},
+
+body:
+JSON.stringify({
+
+email,
+password
+
+})
+
+}
+
+);
+
+const data =
+await response.json();
+
+if(response.ok){
+
+alert(
+"Login successful"
+);
+
+/* DIRECT OPEN */
+
+window.open(
+"dashboard.html",
+"_self"
+);
+
+}
+
+else{
+
+alert(
+data.message
+);
+
+}
+
+}
+
+</script>
+
+</body>
+
+</html>
