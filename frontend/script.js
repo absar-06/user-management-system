@@ -2,16 +2,88 @@ async function register(){
 
 try{
 
-const name =
-document.getElementById("name")?.value;
+const name=
+document.getElementById("name").value.trim();
 
-const email =
-document.getElementById("email")?.value;
+const email=
+document.getElementById("email").value.trim();
 
-const password =
-document.getElementById("password")?.value;
+const role=
+document.getElementById("role").value;
 
-const response =
+const password=
+document.getElementById("password").value;
+
+const message=
+document.getElementById("message");
+
+message.style.display="none";
+
+const namePattern=
+/^[A-Za-z ]+$/;
+
+if(name===""){
+
+message.style.display="block";
+message.innerHTML="Enter Name";
+
+return;
+
+}
+
+if(!namePattern.test(name)){
+
+message.style.display="block";
+message.innerHTML="Name should contain alphabets only";
+
+return;
+
+}
+
+if(name.length<3){
+
+message.style.display="block";
+message.innerHTML="Minimum 3 letters";
+
+return;
+
+}
+
+const emailPattern=
+/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+if(!emailPattern.test(email)){
+
+message.style.display="block";
+message.innerHTML="Enter valid email";
+
+return;
+
+}
+
+if(role===""){
+
+message.style.display="block";
+message.innerHTML="Select Role";
+
+return;
+
+}
+
+const passwordPattern=
+/^(?=.*[A-Z])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,16}$/;
+
+if(!passwordPattern.test(password)){
+
+message.style.display="block";
+message.innerHTML="Password requirements not satisfied";
+
+return;
+
+}
+
+const response=
+
 await fetch(
 
 "http://localhost:5000/api/users/register",
@@ -21,14 +93,20 @@ await fetch(
 method:"POST",
 
 headers:{
-"Content-Type":"application/json"
+
+"Content-Type":
+
+"application/json"
+
 },
 
 body:
+
 JSON.stringify({
 
 name,
 email,
+role,
 password
 
 })
@@ -37,25 +115,65 @@ password
 
 );
 
-const data =
+const data=
 await response.json();
-
-alert(data.message);
 
 if(response.ok){
 
-window.location =
+message.style.display="block";
+
+message.style.color="#00ff7f";
+
+message.innerHTML=
+
+"✔ Registration Successful";
+
+setTimeout(
+
+()=>{
+
+window.location=
 "login.html";
 
-}
+},
 
-}
+1500
 
-catch{
-
-alert(
-"Register Failed"
 );
+
+}
+
+else{
+
+message.style.display="block";
+
+message.style.color="red";
+
+message.innerHTML=
+
+data.message;
+
+}
+
+}
+
+catch(error){
+
+document
+.getElementById(
+"message"
+)
+.style
+.display=
+"block";
+
+document
+.getElementById(
+"message"
+)
+.innerHTML=
+
+"Registration Failed";
 
 }
 
@@ -63,19 +181,19 @@ alert(
 
 async function login(){
 
-try{
+const email=
+document.getElementById("email").value;
 
-const email =
-document.getElementById(
-"email"
-).value;
+const password=
+document.getElementById("password").value;
 
-const password =
-document.getElementById(
-"password"
-).value;
+const message=
+document.getElementById("message");
 
-const response =
+message.style.display="none";
+
+const response=
+
 await fetch(
 
 "http://localhost:5000/api/users/login",
@@ -85,10 +203,15 @@ await fetch(
 method:"POST",
 
 headers:{
-"Content-Type":"application/json"
+
+"Content-Type":
+
+"application/json"
+
 },
 
 body:
+
 JSON.stringify({
 
 email,
@@ -100,35 +223,43 @@ password
 
 );
 
-const data =
+const data=
 await response.json();
 
 if(response.ok){
 
-alert(
-"Login successful"
-);
+message.style.display="block";
 
-window.location =
+message.style.color="#00ff7f";
+
+message.innerHTML=
+
+"✔ Login Successful";
+
+setTimeout(
+
+()=>{
+
+window.location=
 "dashboard.html";
+
+},
+
+1500
+
+);
 
 }
 
 else{
 
-alert(
-data.message
-);
+message.style.display="block";
 
-}
+message.style.color="red";
 
-}
+message.innerHTML=
 
-catch{
-
-alert(
-"Login Failed"
-);
+data.message;
 
 }
 
@@ -138,108 +269,215 @@ async function loadUsers(){
 
 try{
 
-const response =
+const response=
+
 await fetch(
 
 "http://localhost:5000/api/users"
 
 );
 
-const users =
+const users=
+
 await response.json();
 
-const list =
+const table=
+
 document.getElementById(
+
 "users"
+
 );
 
-if(!list)
-return;
 
-list.innerHTML="";
 
-users.forEach((user)=>{
+table.innerHTML=`
 
-list.innerHTML +=
+<table class="user-table">
 
-`
+<thead>
 
-<div
-style="
-background:white;
-padding:20px;
-margin:20px;
-border-radius:15px;
-">
+<tr>
 
-<p>
+<th>ID</th>
 
-${user.name}
+<th>Name</th>
 
- - ${user.email}
+<th>Email</th>
 
-</p>
+<th>Role</th>
 
-<button
-onclick=
-"editUser('${user._id}')">
+<th>Actions</th>
+
+</tr>
+
+</thead>
+
+<tbody id="tbody">
+
+</tbody>
+
+</table>
+
+`;
+
+
+
+const tbody=
+
+document.getElementById(
+
+"tbody"
+
+);
+
+
+
+users.forEach(
+
+(user)=>{
+
+const displayId=
+
+user.customId
+
+||
+
+(
+
+user.name
+.substring(0,2)
+.toUpperCase()
+
++
+
+Math.floor(
+1000+
+Math.random()*9000
+)
+
+);
+
+
+
+tbody.innerHTML+=`
+
+<tr>
+
+<td>${displayId}</td>
+
+<td>${user.name}</td>
+
+<td>${user.email}</td>
+
+<td>${user.role}</td>
+
+<td>
+
+<button onclick="editUser('${user._id}')">
 
 Edit
 
 </button>
 
-<button
-onclick=
-"deleteUser('${user._id}')">
+<button onclick="deleteUser('${user._id}')">
 
 Delete
 
 </button>
 
-</div>
+</td>
+
+</tr>
 
 `;
 
-});
-
 }
 
-catch{
-
-alert(
-"Cannot Load Users"
 );
 
 }
 
+catch(error){
+
+console.log(error);
+
 }
 
-async function editUser(id){
+}
 
-const name =
-prompt(
-"Enter New Name"
-);
 
-if(!name)
+
+let editId=null;
+
+function editUser(id){
+
+editId=id;
+
+document
+.getElementById(
+"editBox"
+)
+.style
+.display=
+"block";
+
+}
+
+function closeEdit(){
+
+document
+.getElementById(
+"editBox"
+)
+.style
+.display=
+"none";
+
+document
+.getElementById(
+"editName"
+)
+.value=
+"";
+
+}
+
+async function saveEdit(){
+
+const newName=
+
+document
+.getElementById(
+"editName"
+)
+.value
+.trim();
+
+if(!newName)
 return;
 
 await fetch(
 
-`http://localhost:5000/api/users/${id}`,
+`http://localhost:5000/api/users/${editId}`,
 
 {
 
 method:"PUT",
 
 headers:{
-"Content-Type":"application/json"
+
+"Content-Type":
+
+"application/json"
+
 },
 
 body:
+
 JSON.stringify({
 
-name
+name:newName
 
 })
 
@@ -247,20 +485,23 @@ name
 
 );
 
+closeEdit();
+
 loadUsers();
 
 }
+
+
 
 async function deleteUser(id){
 
 await fetch(
 
-`http://localhost:5000/api/users/${id}`,
+"http://localhost:5000/api/users/"+id,
 
 {
 
-method:
-"DELETE"
+method:"DELETE"
 
 }
 
@@ -272,7 +513,79 @@ loadUsers();
 
 function logout(){
 
-window.location =
+window.location=
 "login.html";
+
+}
+
+function checkPassword(){
+
+const password=
+
+document
+.getElementById(
+"password"
+)
+.value;
+
+document
+.getElementById(
+"passwordRules"
+)
+.style
+.display=
+"block";
+
+document
+.getElementById(
+"length"
+)
+.innerHTML=
+
+password.length>=8
+
+&&
+
+password.length<=16
+
+?
+
+"✅ 8–16 characters"
+
+:
+
+"❌ 8–16 characters";
+
+document
+.getElementById(
+"upper"
+)
+.innerHTML=
+
+/[A-Z]/.test(password)
+
+?
+
+"✅ One Uppercase"
+
+:
+
+"❌ One Uppercase";
+
+document
+.getElementById(
+"special"
+)
+.innerHTML=
+
+/[!@#$%^&*]/.test(password)
+
+?
+
+"✅ One Special"
+
+:
+
+"❌ One Special";
 
 }

@@ -1,49 +1,135 @@
-const User = require("../models/User");
-const bcrypt = require("bcryptjs");
+const User =
+require("../models/User");
 
-const registerUser = async (req, res) => {
+exports.register = async(
 
-try {
+req,
+res
 
-const { name, email, password } = req.body;
+)=>{
 
-const existingUser =
-await User.findOne({ email });
+try{
 
-if (existingUser) {
-
-return res.status(400).json({
-message: "User already exists"
-});
-
-}
-
-const hashedPassword =
-await bcrypt.hash(password, 10);
-
-await User.create({
+const{
 
 name,
 email,
-password: hashedPassword
+role,
+password
 
-});
+}
 
-res.status(201).json({
+=
+
+req.body;
+
+if(
+
+!name||
+
+!email||
+
+!role||
+
+!password
+
+){
+
+return res
+.status(400)
+.json({
 
 message:
-"Register successful"
+
+"Fill all fields"
 
 });
 
 }
 
-catch (error) {
+const existingUser=
 
-res.status(500).json({
+await User.findOne({
+
+email
+
+});
+
+if(existingUser){
+
+return res
+.status(400)
+.json({
 
 message:
-error.message
+
+"Email already exists"
+
+});
+
+}
+
+const random=
+
+Math.floor(
+1000+
+Math.random()*9000
+);
+
+const customId=
+
+name
+.slice(
+0,
+2
+)
+.toUpperCase()
+
++
+
+random;
+
+const user=
+
+new User({
+
+customId,
+
+name,
+
+email,
+
+role,
+
+password
+
+});
+
+await user.save();
+
+res
+.status(201)
+.json({
+
+message:
+
+"Register Successful"
+
+});
+
+}
+
+catch(error){
+
+console.log(error);
+
+res
+.status(500)
+.json({
+
+message:
+
+"Registration Failed"
 
 });
 
@@ -51,15 +137,16 @@ error.message
 
 };
 
+exports.login = async(
 
+req,
+res
 
+)=>{
 
+try{
 
-const loginUser = async (req, res) => {
-
-try {
-
-const {
+const{
 
 email,
 password
@@ -70,59 +157,55 @@ password
 
 req.body;
 
-const user =
+const user=
+
 await User.findOne({
 
 email
 
 });
 
-if (!user) {
+if(
 
-return res.status(400).json({
+!user||
+
+user.password!==password
+
+){
+
+return res
+.status(401)
+.json({
 
 message:
-"User not found"
+
+"Invalid Credentials"
 
 });
 
 }
 
-const match =
-await bcrypt.compare(
-
-password,
-
-user.password
-
-);
-
-if (!match) {
-
-return res.status(400).json({
+res
+.status(200)
+.json({
 
 message:
-"Wrong Password"
+
+"Login Successful"
 
 });
 
 }
 
-res.status(200).json({
+catch(error){
+
+res
+.status(500)
+.json({
 
 message:
-"Login successful"
 
-});
-
-}
-
-catch (error) {
-
-res.status(500).json({
-
-message:
-error.message
+"Login Failed"
 
 });
 
@@ -130,101 +213,123 @@ error.message
 
 };
 
-
-
-
-
-const getUsers =
-async (
+exports.getUsers = async(
 
 req,
 res
 
-) => {
+)=>{
 
-const users =
-await User.find(
+try{
 
-{},
+const users=
 
-"-password"
-
-);
+await User.find();
 
 res.json(
+
 users
+
 );
+
+}
+
+catch{
+
+res
+.status(500)
+.json({
+
+message:
+
+"Cannot Load Users"
+
+});
+
+}
 
 };
 
-
-
-
-
-const deleteUser =
-async (
+exports.updateUser = async(
 
 req,
 res
 
-) => {
+)=>{
 
-await User.findByIdAndDelete(
-req.params.id
+try{
+
+await User.findByIdAndUpdate(
+
+req.params.id,
+
+req.body
+
 );
 
 res.json({
 
 message:
-"Deleted"
+
+"Updated"
 
 });
 
+}
+
+catch{
+
+res
+.status(500)
+.json({
+
+message:
+
+"Update Failed"
+
+});
+
+}
+
 };
 
-
-
-
-
-const updateUser =
-async (
+exports.deleteUser = async(
 
 req,
 res
 
-) => {
+)=>{
 
-const user =
-await User.findByIdAndUpdate(
+try{
 
-req.params.id,
+await User.findByIdAndDelete(
 
-req.body,
+req.params.id
 
-{
+);
 
-new:true
+res.json({
+
+message:
+
+"Deleted"
+
+});
 
 }
 
-);
+catch{
 
-res.json(
-user
-);
+res
+.status(500)
+.json({
 
-};
+message:
 
+"Delete Failed"
 
+});
 
-
-
-module.exports = {
-
-registerUser,
-loginUser,
-getUsers,
-deleteUser,
-updateUser
+}
 
 };

@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html>
 
 <head>
@@ -18,27 +19,118 @@
 <input
 id="name"
 type="text"
-placeholder="Enter Name">
+placeholder="Enter Name"
+required
+>
 
 <br><br>
 
 <input
 id="email"
 type="email"
-placeholder="Enter Email">
+placeholder="Enter Email"
+required
+>
+
+<br><br>
+
+<select
+id="role"
+class="role-select"
+required
+>
+
+<option value="">
+Select Role
+</option>
+
+<option value="User">
+User
+</option>
+
+<option value="Admin">
+Admin
+</option>
+
+<option value="Super Admin">
+Super Admin
+</option>
+
+</select>
 
 <br><br>
 
 <input
 id="password"
 type="password"
-placeholder="Enter Password">
+placeholder="Enter Password"
+onkeyup="checkPassword()"
+required
+>
+
+<div
+id="passwordRules"
+
+style="
+display:none;
+text-align:left;
+color:white;
+margin-top:10px;
+"
+>
+
+<p id="length">
+❌ 8–16 characters
+</p>
+
+<p id="upper">
+❌ One Uppercase letter
+</p>
+
+<p id="special">
+❌ One Special character
+</p>
+
+</div>
+
+<div
+id="message"
+
+style="
+display:none;
+background:white;
+color:#5b4bdb;
+padding:10px;
+border-radius:10px;
+margin-top:15px;
+text-align:center;
+font-weight:bold;
+"
+>
+
+</div>
+
+<br>
+
+<button onclick="register()">
+
+Register
+
+</button>
 
 <br><br>
 
-<button onclick="register()">
-Register
-</button>
+<p class="login-text">
+
+Already have account?
+
+<a href="login.html">
+
+Login
+
+</a>
+
+</p>
 
 </div>
 

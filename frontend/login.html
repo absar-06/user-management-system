@@ -30,6 +30,19 @@ placeholder="Enter Password">
 
 <br><br>
 
+<div
+id="message"
+style="
+display:none;
+margin-bottom:15px;
+padding:10px;
+border-radius:10px;
+text-align:center;
+font-weight:bold;
+background:white;
+">
+</div>
+
 <button onclick="login()">
 
 Login
@@ -83,24 +96,58 @@ await response.json();
 
 if(response.ok){
 
-alert(
-"Login successful"
-);
+document
+.getElementById(
+"message"
+)
+.style.display=
+"block";
 
-/* DIRECT OPEN */
+document
+.getElementById(
+"message"
+)
+.style.color=
+"#00ff7f";
 
-window.open(
-"dashboard.html",
-"_self"
-);
+document
+.getElementById(
+"message"
+)
+.innerHTML=
+"✔ Login Successful";
+
+setTimeout(()=>{
+
+window.location=
+"dashboard.html";
+
+},1500);
 
 }
 
 else{
 
-alert(
-data.message
-);
+document
+.getElementById(
+"message"
+)
+.style.display=
+"block";
+
+document
+.getElementById(
+"message"
+)
+.style.color=
+"red";
+
+document
+.getElementById(
+"message"
+)
+.innerHTML=
+data.message;
 
 }
 

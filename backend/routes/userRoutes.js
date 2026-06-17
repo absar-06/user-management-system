@@ -1,22 +1,16 @@
-const express=
-require(
-"express"
-);
+const express =
+require("express");
 
-const router=
+const router =
 express.Router();
 
 const {
 
-registerUser,
-
-loginUser,
-
+register,
+login,
 getUsers,
-
-deleteUser,
-
-updateUser
+updateUser,
+deleteUser
 
 }
 
@@ -31,29 +25,45 @@ require(
 
 
 router.post(
+
 "/register",
-registerUser
+
+register
+
 );
 
 router.post(
+
 "/login",
-loginUser
+
+login
+
 );
 
 router.get(
-"/",
-getUsers
-);
 
-router.delete(
-"/:id",
-deleteUser
+"/",
+
+getUsers
+
 );
 
 router.put(
+
 "/:id",
+
 updateUser
+
 );
 
-module.exports=
+router.delete(
+
+"/:id",
+
+deleteUser
+
+);
+
+module.exports =
+
 router;

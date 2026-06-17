@@ -1,46 +1,159 @@
 <!DOCTYPE html>
-
 <html>
 
 <head>
-
 <title>Dashboard</title>
-
-<link
-rel="stylesheet"
-href="style.css">
-
+<link rel="stylesheet" href="style.css">
 </head>
 
-<body>
+<div id="editModal" class="modal">
 
-<div class="container">
+<div class="modal-box">
 
-<h1>Dashboard</h1>
+<h2>Edit User</h2>
 
-<button onclick="loadUsers()">
+<input
+type="text"
+id="newName"
+placeholder="Enter New Name"
+>
 
-Load Users
+<div class="modal-buttons">
 
+<button onclick="saveEdit()">
+Save
 </button>
 
-<br><br>
-
-<button onclick="logout()">
-
-Logout
-
+<button onclick="closeModal()">
+Cancel
 </button>
-
-<ul id="users">
-
-</ul>
 
 </div>
 
-<script src="script.js">
+</div>
 
-</script>
+</div>
+
+
+<body>
+
+<header class="header">
+<h2>User Management System</h2>
+
+<button onclick="logout()">
+Logout
+</button>
+</header>
+
+<div class="dashboard">
+
+<div class="sidebar">
+
+<h3>Dashboard</h3>
+
+<button onclick="loadUsers()">
+Load Users
+</button>
+
+</div>
+
+<div class="content">
+
+<h1>Users</h1>
+
+<div id="users"></div>
+
+<div
+id="editBox"
+
+style="
+display:none;
+position:fixed;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+background:white;
+padding:25px;
+border-radius:15px;
+box-shadow:0 0 20px rgba(0,0,0,0.3);
+width:350px;
+z-index:999;
+"
+
+>
+
+<h3>
+
+Edit User
+
+</h3>
+
+<input
+
+id="editName"
+
+type="text"
+
+placeholder="Enter New Name"
+
+style="
+width:100%;
+padding:12px;
+border:1px solid #ccc;
+border-radius:10px;
+margin-top:10px;
+"
+
+>
+
+<br><br>
+
+<button
+
+onclick="saveEdit()"
+
+style="
+padding:10px 20px;
+background:#0ea5e9;
+color:white;
+border:none;
+border-radius:10px;
+cursor:pointer;
+"
+
+>
+
+Save
+
+</button>
+
+<button
+
+onclick="closeEdit()"
+
+style="
+padding:10px 20px;
+background:red;
+color:white;
+border:none;
+border-radius:10px;
+cursor:pointer;
+"
+
+>
+
+Cancel
+
+</button>
+
+</div>
+
+
+</div>
+
+</div>
+
+<script src="script.js"></script>
 
 </body>
 
